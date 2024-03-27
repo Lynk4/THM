@@ -1,5 +1,6 @@
 # 0x41haz
 ---
+[CHALLENGE-LINK](https://tryhackme.com/r/room/0x41haz)
 
 In this challenge, you are asked to solve a simple reversing solution. Download and analyze the binary to discover the password.
 
