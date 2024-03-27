@@ -8,7 +8,8 @@ A executable file is provided.
 when checking it's file types it gives an error message for os ***unknown arch 0x3e00* (SYSV)**
 googling it gives me a solution **you need to patch the sixth byte (0x02) to 0x01.**
 
-**FROM THIS***
+
+**FROM THIS**
 ---
 <img width="1266" alt="Screenshot 2024-03-27 at 8 39 38 PM" src="https://github.com/Lynk4/THM/assets/44930131/f82ce45d-e34e-4837-866d-55558a69b4a4">
 
@@ -40,8 +41,15 @@ By analyzing the main function you will get the password:
 
 ---
 
-password:2@@25$gfsT&@L
-flag:THM{2@@25$gfsT&@L}
+password:
+```
+2@@25$gfsT&@L
+```
 
+
+flag:
+```
+THM{2@@25$gfsT&@L}
+```
 ---
 
