@@ -599,6 +599,43 @@ $
 
 
 
+# Challenge 4 - pwn104
+
+Bsic file check:
+
+---
+```bash
+❯ file pwn104-1644300377109.pwn104
+pwn104-1644300377109.pwn104: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=60e0bab59b4e5412a1527ae562f5b8e58928a7cb, for GNU/Linux 3.2.0, not stripped
+❯ checksec --file=pwn104-1644300377109.pwn104
+RELRO           STACK CANARY      NX            PIE             RPATH      RUNPATSymbols		FORTIFY	Fortified	Fortifiable	FILE
+Partial RELRO   No canary found   NX disabled   No PIE          No RPATH   No RUNPATH   46 Symbols	 No	0		2		pwn104-1644300377109.pwn104
+
+```
+---
+
+let's run the program
+
+---
+```bash
+❯ ./pwn104-1644300377109.pwn104
+       ┌┬┐┬─┐┬ ┬┬ ┬┌─┐┌─┐┬┌─┌┬┐┌─┐
+        │ ├┬┘└┬┘├─┤├─┤│  ├┴┐│││├┤ 
+        ┴ ┴└─ ┴ ┴ ┴┴ ┴└─┘┴ ┴┴ ┴└─┘
+                 pwn 104          
+
+I think I have some super powers 💪
+especially executable powers 😎💥
+
+Can we go for a fight? 😏💪
+I'm waiting for you at 0x7ffd2604b330
+aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+zsh: segmentation fault  ./pwn104-1644300377109.pwn104
+
+```
+---
+
+
 
 
 
