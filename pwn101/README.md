@@ -797,6 +797,83 @@ $
 
 ---
 
+# Challenge 5 - pwn105
+
+let's run the program:
+
+---
+
+```bash
+❯ file pwn105-1644300421555.pwn105
+pwn105-1644300421555.pwn105: ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=efe6d094462867e6b08e74de43fb7126e7b14ee4, for GNU/Linux 3.2.0, not stripped
+❯ checksec --file=pwn105-1644300421555.pwn105
+RELRO           STACK CANARY      NX            PIE             RPATH      RUNPATH	Symbols		FORTIFY	Fortified	Fortifiable	FILE
+Partial RELRO   Canary found      NX enabled    PIE enabled     No RPATH   No RUNPATH   50 Symbols	 No	0		1		pwn105-1644300421555.pwn105
+❯ ./pwn105-1644300421555.pwn105
+       ┌┬┐┬─┐┬ ┬┬ ┬┌─┐┌─┐┬┌─┌┬┐┌─┐
+        │ ├┬┘└┬┘├─┤├─┤│  ├┴┐│││├┤ 
+        ┴ ┴└─ ┴ ┴ ┴┴ ┴└─┘┴ ┴┴ ┴└─┘
+                 pwn 105          
+
+
+-------=[ BAD INTEGERS ]=-------
+|-< Enter two numbers to add >-|
+
+]>> 12
+]>> 13
+
+[*] ADDING 12 + 13
+[*] RESULT: 25
+
+╭─ ~/thm/pwn101/pwn105                                                                                                                                
+╰─❯ 
+
+```
+---
+
+```bash
+❯ ./pwn105-1644300421555.pwn105
+       ┌┬┐┬─┐┬ ┬┬ ┬┌─┐┌─┐┬┌─┌┬┐┌─┐
+        │ ├┬┘└┬┘├─┤├─┤│  ├┴┐│││├┤ 
+        ┴ ┴└─ ┴ ┴ ┴┴ ┴└─┘┴ ┴┴ ┴└─┘
+                 pwn 105          
+
+
+-------=[ BAD INTEGERS ]=-------
+|-< Enter two numbers to add >-|
+
+]>> c
+]>> 
+[*] ADDING 32539 + 0
+[*] RESULT: 32539
+❯
+```
+
+---
+
+Decompiled Main function..
+
+---
+
+<img width="1404" alt="Screenshot 2024-04-16 at 1 01 21 AM" src="https://github.com/Lynk4/THM/assets/44930131/127c6e75-f2d6-4591-bd14-328363047845">
+
+
+---
+
+
+What it does..........
+
+
+1. Prints the banner.
+2. It accepts our input and keeps it in variable num1.
+3. It accepts our input and keeps it in variable num2.
+4. A variable is created that adds up num1 and num2.
+5. An if check is used to determine whether the num1 variable is less than zero or the num2 variable is less than zero.
+6. If the check is met, it will depart. 
+7. If the sum variable is less than zero, it busts a shell. 
+8. However, if none of those conditions are met, it just adds up our input and returns the calculated value.
+
+
 
 
 
